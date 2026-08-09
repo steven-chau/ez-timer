@@ -6,8 +6,8 @@
   "start_url": ".",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#1a1a2e",
-  "theme_color": "#1a1a2e",
+  "background_color": "#151122",
+  "theme_color": "#151122",
   "icons": [
     {
       "src": "icon-192.png",
@@ -23,7 +23,7 @@
   "screenshots": [
     {
       "src": "screenshots/timer-dark.png",
-      "sizes": "1170x2532",
+      "sizes": "412x800",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Timer view in dark mode"
