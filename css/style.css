@@ -1,24 +1,25 @@
 /* ===== CSS Variables / Design Tokens ===== */
+/* Amethyst Power — royal purple & gold energy */
 :root {
-  --bg: #1a1a2e;
-  --surface: #16213e;
-  --surface-hover: #1f3060;
-  --surface-active: #253865;
-  --text: #e0e0e0;
-  --text-secondary: #a0a0b0;
-  --text-muted: #6a6a7a;
-  --accent: #e94560;
-  --accent-hover: #f0627a;
-  --border: #2a2a4a;
+  --bg: #151122;
+  --surface: #1e1835;
+  --surface-hover: #29204a;
+  --surface-active: #34285c;
+  --text: #ece6f6;
+  --text-secondary: #b0a0cc;
+  --text-muted: #766890;
+  --accent: #f0c040;
+  --accent-hover: #f4d068;
+  --border: #34285c;
   --radius: 12px;
   --radius-sm: 8px;
   --radius-lg: 16px;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
 
   /* Phase colors */
-  --color-prepare: #2980B9;
-  --color-work: #E74C3C;
-  --color-rest: #27AE60;
+  --color-prepare: #7c5cbf;
+  --color-work: #f0c040;
+  --color-rest: #4a7ed8;
   --ezit-ring-ease: 0.95s;
 }
 
@@ -493,7 +494,7 @@ body {
 
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: #151122;
   border-color: var(--accent);
 }
 
@@ -547,7 +548,7 @@ body {
 
 .btn-danger:hover {
   background: var(--accent);
-  color: #fff;
+  color: #151122;
 }
 
 /* ===== Routines Section ===== */
@@ -688,7 +689,7 @@ body {
 
 .routine-tag.sets {
   background: var(--accent);
-  color: #fff;
+  color: #151122;
 }
 
 .routine-card-actions {
@@ -838,7 +839,7 @@ body {
   gap: 0.5rem;
   padding: 1rem 0.75rem;
   padding-bottom: max(1rem, env(safe-area-inset-bottom));
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -1167,7 +1168,7 @@ body {
 
 .mode-btn.active {
   background: var(--accent);
-  color: #fff;
+  color: #151122;
 }
 
 .records-main {
@@ -1314,10 +1315,10 @@ body {
 }
 
 .calendar-day.l0 { background: var(--surface); color: var(--text-muted); }
-.calendar-day.l1 { background: #0e4429; }
-.calendar-day.l2 { background: #006d32; }
-.calendar-day.l3 { background: #26a641; }
-.calendar-day.l4 { background: #39d353; color: #000; }
+.calendar-day.l1 { background: #3d2050; }
+.calendar-day.l2 { background: #6b3080; }
+.calendar-day.l3 { background: #a050c0; }
+.calendar-day.l4 { background: #d0a0e0; color: #151122; }
 
 .calendar-legend {
   display: flex;
@@ -1340,10 +1341,10 @@ body {
 }
 
 .calendar-legend-cell.l0 { background: var(--surface); }
-.calendar-legend-cell.l1 { background: #0e4429; }
-.calendar-legend-cell.l2 { background: #006d32; }
-.calendar-legend-cell.l3 { background: #26a641; }
-.calendar-legend-cell.l4 { background: #39d353; }
+.calendar-legend-cell.l1 { background: #3d2050; }
+.calendar-legend-cell.l2 { background: #6b3080; }
+.calendar-legend-cell.l3 { background: #a050c0; }
+.calendar-legend-cell.l4 { background: #d0a0e0; }
 
 /* ===== Finish GIF ===== */
 .finish-gif {
