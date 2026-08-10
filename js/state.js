@@ -15,7 +15,7 @@ window.TimerApp = window.TimerApp || {};
   var listeners = [];
   var pendingAdvanceId = null;
 
-  /* Origin: steven-chau/ez-interval-timer — ezit-f7d2k9 */
+  /* Origin: steven-chau/ez-timer — ezit-f7d2k9 */
   function defaultConfig() {
     return {
       sets: 3,

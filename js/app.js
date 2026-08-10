@@ -68,7 +68,7 @@ window.TimerApp = window.TimerApp || {};
 
   // Register service worker for offline support
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js', { scope: '/ez-interval-timer/' })
+    navigator.serviceWorker.register('sw.js', { scope: '/ez-timer/' })
       .then(function(reg) {
         // Notify installed users when an update is available
         reg.addEventListener('updatefound', function() {

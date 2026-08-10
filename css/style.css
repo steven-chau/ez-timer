@@ -749,6 +749,21 @@ body {
 .timer-bg.phase-paused { filter: brightness(0.6); }
 .timer-bg.phase-finished { background: var(--surface); }
 
+/* Darken text on bright work-phase background for contrast */
+.timer-bg.phase-work .routine-label,
+.timer-bg.phase-work .phase-label,
+.timer-bg.phase-work .countdown-digits,
+.timer-bg.phase-work .set-counter {
+  color: var(--bg);
+  text-shadow: none;
+}
+.timer-bg.phase-work .progress-ring-fill {
+  stroke: var(--bg);
+}
+.timer-bg.phase-work .progress-ring-track {
+  stroke: rgba(21, 17, 34, 0.2);
+}
+
 .timer-content {
   display: flex;
   flex-direction: column;

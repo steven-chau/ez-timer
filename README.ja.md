@@ -1,7 +1,7 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-dark.ja.png">
-    <img alt="EZ タイマー — ワーク/レスト間隔付きの無料オンライントレーニングタイマー" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.ja.png">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/ez-timer/main/screenshots/timer-dark.ja.png">
+    <img alt="EZ タイマー — ワーク/レスト間隔付きの無料オンライントレーニングタイマー" src="https://raw.githubusercontent.com/steven-chau/ez-timer/main/screenshots/timer-light.ja.png">
   </picture>
 </div>
 
@@ -9,9 +9,9 @@
 
 **ワークアウト、HIIT、タバタ、サーキットトレーニング、ストレッチ、ヨガ、あらゆる時間制ルーティンのための無料・インストール不要のインターバルタイマーです。** ブラウザで動作します。サインアップ不要、広告なし、アプリストア不要。ワークアウト履歴トラッキング、カレンダーヒートマップ、5言語対応。
 
-[![License](https://img.shields.io/github/license/steven-chau/ez-interval-timer)](LICENSE)
+[![License](https://img.shields.io/github/license/steven-chau/ez-timer)](LICENSE)
 
-**[タイマーを開く →](https://steven-chau.github.io/ez-interval-timer)**
+**[タイマーを開く →](https://steven-chau.github.io/ez-timer)**
 
 ---
 
@@ -80,7 +80,7 @@
 
 ## 使い方
 
-1. **開く** `https://steven-chau.github.io/ez-interval-timer`（任意のデバイスで）
+1. **開く** `https://steven-chau.github.io/ez-timer`（任意のデバイスで）
 2. **ルーティンを設定** — ワーク時間、レスト時間、セット数を調整
 3. **スタートを押す** — 準備カウントダウンが始まり、ワークアウトが開始されます
 4. **お気に入りのルーティンを保存**して次回すぐにアクセス
@@ -93,8 +93,8 @@
 リポジトリをクローンして、任意のブラウザで `index.html` を開きます：
 
 ```bash
-git clone https://github.com/steven-chau/ez-interval-timer.git
-cd ez-interval-timer
+git clone https://github.com/steven-chau/ez-timer.git
+cd ez-timer
 open index.html  # またはファイルマネージャーでダブルクリック
 ```
 

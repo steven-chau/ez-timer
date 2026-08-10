@@ -1,7 +1,7 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-dark.zh-HK.png">
-    <img alt="簡易計時器 — 免費線上運動計時器，支援運動/休息間隔" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.zh-HK.png">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/ez-timer/main/screenshots/timer-dark.zh-HK.png">
+    <img alt="簡易計時器 — 免費線上運動計時器，支援運動/休息間隔" src="https://raw.githubusercontent.com/steven-chau/ez-timer/main/screenshots/timer-light.zh-HK.png">
   </picture>
 </div>
 
@@ -9,9 +9,9 @@
 
 **一個免費、無需安裝的間隔計時器，適用於運動、HIIT、Tabata、循環訓練、伸展、瑜伽及任何定時模式。** 在瀏覽器中運行。無需註冊、無廣告、無應用商店。現已支援運動記錄追蹤、日曆熱力圖及 5 種語言。
 
-[![License](https://img.shields.io/github/license/steven-chau/ez-interval-timer)](LICENSE)
+[![License](https://img.shields.io/github/license/steven-chau/ez-timer)](LICENSE)
 
-**[開啟計時器 →](https://steven-chau.github.io/ez-interval-timer)**
+**[開啟計時器 →](https://steven-chau.github.io/ez-timer)**
 
 ---
 
@@ -80,7 +80,7 @@
 
 ## 使用方法
 
-1. **開啟** `https://steven-chau.github.io/ez-interval-timer`（任何裝置皆可）
+1. **開啟** `https://steven-chau.github.io/ez-timer`（任何裝置皆可）
 2. **設定你的模式**——調整運動時間、休息時間和組數
 3. **按開始**——準備倒數計時開始，然後你的運動隨即開始
 4. **儲存你喜歡的模式**以便下次快速存取
@@ -93,8 +93,8 @@
 複製儲存庫並在任何瀏覽器中開啟 `index.html`：
 
 ```bash
-git clone https://github.com/steven-chau/ez-interval-timer.git
-cd ez-interval-timer
+git clone https://github.com/steven-chau/ez-timer.git
+cd ez-timer
 open index.html  # 或在檔案管理器中雙擊開啟
 ```
 

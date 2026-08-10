@@ -1296,7 +1296,7 @@ window.TimerApp = window.TimerApp || {};
     }
 
     // Share button
-    var shareUrl = 'https://steven-chau.github.io/ez-interval-timer/';
+    var shareUrl = 'https://steven-chau.github.io/ez-timer/';
 
     btnMenuShare.addEventListener('click', function() {
       if (navigator.share) {
@@ -1314,7 +1314,7 @@ window.TimerApp = window.TimerApp || {};
     // Sponsor button (always works)
     btnSponsor.addEventListener('click', function() {
       var lang = exports.I18n.getLanguage();
-      var url = 'https://steven-chau.github.io/ez-interval-timer/SPONSOR.' + lang + '.html';
+      var url = 'https://steven-chau.github.io/ez-timer/SPONSOR.' + lang + '.html';
       window.open(url, '_blank', 'noopener');
       closeMenu();
     });
