@@ -1301,7 +1301,7 @@ window.TimerApp = window.TimerApp || {};
     btnMenuShare.addEventListener('click', function() {
       if (navigator.share) {
         navigator.share({
-          title: 'EZ Interval Timer',
+          title: 'EZ Timer',
           text: exports.I18n.t('appTitle'),
           url: shareUrl
         });

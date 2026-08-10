@@ -147,20 +147,28 @@ window.TimerApp = window.TimerApp || {};
     // Cancel any ongoing speech
     window.speechSynthesis.cancel();
 
+    if (!cachedVoices || cachedVoices.length === 0) {
+      cachedVoices = window.speechSynthesis.getVoices();
+    }
+
     var utterance = new SpeechSynthesisUtterance(phrase);
     utterance.rate = 0.9;
     utterance.volume = 0.8;
     if (lang) {
       utterance.lang = lang;
-      // Try to find a matching voice for the language
-      if (!cachedVoices || cachedVoices.length === 0) {
-        cachedVoices = window.speechSynthesis.getVoices();
-      }
+      // Prefer an exact locale match, then a prefix match
+      var bestVoice = null;
       for (var i = 0; i < cachedVoices.length; i++) {
-        if (cachedVoices[i].lang.indexOf(lang) === 0) {
-          utterance.voice = cachedVoices[i];
+        if (cachedVoices[i].lang === lang) {
+          bestVoice = cachedVoices[i];
           break;
         }
+        if (!bestVoice && cachedVoices[i].lang.indexOf(lang) === 0) {
+          bestVoice = cachedVoices[i];
+        }
+      }
+      if (bestVoice) {
+        utterance.voice = bestVoice;
       }
     }
     window.speechSynthesis.speak(utterance);
@@ -185,7 +193,7 @@ window.TimerApp = window.TimerApp || {};
   function announcePhase(phase) {
     var t = exports.I18n.t;
     var lang = exports.I18n.getLanguage();
-    var SPEECH_LOCALE = { 'zh-HK': 'zh-HK', 'zh-TW': 'zh-TW', 'zh-CN': 'zh-CN', ja: 'ja-JP' };
+    var SPEECH_LOCALE = { en: 'en-US', 'zh-HK': 'zh-HK', 'zh-TW': 'zh-TW', 'zh-CN': 'zh-CN', ja: 'ja-JP' };
     var speechLang = SPEECH_LOCALE[lang] || '';
     switch (phase) {
       case 'prepare':

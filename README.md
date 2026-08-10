@@ -1,11 +1,11 @@
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-dark.png">
-    <img alt="EZ Interval Timer — free online workout timer with work/rest intervals" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.png">
+    <img alt="EZ Timer — free online workout timer with work/rest intervals" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.png">
   </picture>
 </div>
 
-# EZ Interval Timer — Free Online Workout & HIIT Timer
+# EZ Timer — Free Online Workout & HIIT Timer
 
 **A free, no-install interval timer for workouts, HIIT, Tabata, circuit training, stretching, yoga, and any timed routine.** Runs in your browser. No sign-up, no ads, no app store. Now with workout history tracking, calendar heatmaps, and support for 5 languages.
 
@@ -15,9 +15,9 @@
 
 ---
 
-## Why EZ Interval Timer?
+## Why EZ Timer?
 
-Most workout timer apps are bloated with ads, require sign-ups, or lock features behind subscriptions. EZ Interval Timer is different:
+Most workout timer apps are bloated with ads, require sign-ups, or lock features behind subscriptions. EZ Timer is different:
 
 - **Truly free.** No ads, no accounts, no paywalls. Just a timer that works.
 - **Runs in your browser.** Works on phones, tablets, and desktops. Nothing to install.
@@ -124,6 +124,6 @@ MIT
 
 ---
 
-**[Open EZ Interval Timer →](https://steven-chau.github.io/interval-timer)**
+**[Open EZ Timer →](https://steven-chau.github.io/interval-timer)**
 
 *No ads. No sign-up. Just press Start.*

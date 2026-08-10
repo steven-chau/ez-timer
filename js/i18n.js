@@ -9,7 +9,7 @@ window.TimerApp = window.TimerApp || {};
 
   var translations = {
     en: {
-      appTitle: 'EZ Interval Timer',
+      appTitle: 'EZ Timer',
       quickstart: 'Quickstart',
       yourRoutines: 'Your Routines',
       sets: 'Sets',
