@@ -186,6 +186,9 @@ window.TimerApp = window.TimerApp || {};
     scanAttempts = 0;
     document.getElementById('import-progress').textContent = '';
     document.getElementById('import-actions').classList.add('hidden');
+    document.getElementById('btn-import-merge').disabled = false;
+    var wipeBox = document.getElementById('import-wipe-checkbox');
+    if (wipeBox) wipeBox.checked = false;
 
     // Clean up any previous scanner instance
     if (html5QrCode) {
@@ -283,9 +286,14 @@ window.TimerApp = window.TimerApp || {};
   function finishImport() {
     console.log('=== Import: finishing ===');
     if (html5QrCode) {
-      html5QrCode.stop().then(function() {
-        html5QrCode.clear();
-      }).catch(function() {});
+      try {
+        html5QrCode.stop().then(function() {
+          html5QrCode.clear();
+        }).catch(function() {});
+      } catch (e) {
+        // Scanner was never started (e.g., camera unavailable) — ignore
+        console.log('Import: scanner was not running');
+      }
       html5QrCode = null;
     }
 
@@ -312,6 +320,11 @@ window.TimerApp = window.TimerApp || {};
       if (merged) return;
       merged = true;
       mergeBtn.disabled = true;
+      var wipeBox = document.getElementById('import-wipe-checkbox');
+      if (wipeBox && wipeBox.checked) {
+        console.log('Import: wiping all existing routines before import');
+        exports.Storage.deleteAllRoutines();
+      }
       console.log('Import: user clicked Import — merging ' + allRoutines.length + ' routines');
       mergeRoutines(allRoutines);
       closeImport();

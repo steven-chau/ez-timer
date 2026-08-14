@@ -87,6 +87,10 @@ window.TimerApp = window.TimerApp || {};
     localStorage.setItem(STORAGE_KEY, JSON.stringify(routines));
   }
 
+  function deleteAllRoutines() {
+    localStorage.setItem(STORAGE_KEY, '[]');
+  }
+
   function getLastConfig() {
     try {
       var data = localStorage.getItem(CONFIG_KEY);
@@ -104,6 +108,7 @@ window.TimerApp = window.TimerApp || {};
     getRoutines: getRoutines,
     saveRoutine: saveRoutine,
     deleteRoutine: deleteRoutine,
+    deleteAllRoutines: deleteAllRoutines,
     reorderRoutines: reorderRoutines,
     getLastConfig: getLastConfig,
     saveLastConfig: saveLastConfig

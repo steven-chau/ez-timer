@@ -102,7 +102,8 @@ window.TimerApp = window.TimerApp || {};
       importUploadPrefix: 'Or ',
       importUploadLink: 'upload a screenshot',
       importUploadSuffix: ' of the QR code.',
-      importScanning: 'Scanning... ({n} frames)'
+      importScanning: 'Scanning... ({n} frames)',
+      importWipeFirst: 'Wipe out all existing routines first'
     },
     'zh-HK': {
       appTitle: '簡易計時器',
@@ -198,7 +199,8 @@ window.TimerApp = window.TimerApp || {};
       importUploadPrefix: '或者',
       importUploadLink: '上傳螢幕截圖',
       importUploadSuffix: '掃描 QR Code。',
-      importScanning: '掃描中...（{n} 幀）'
+      importScanning: '掃描中...（{n} 幀）',
+      importWipeFirst: '先刪除所有現有流程'
     },
     'zh-TW': {
       appTitle: '簡易計時器',
@@ -290,7 +292,8 @@ window.TimerApp = window.TimerApp || {};
       qrMultiInstruction: '請繼續掃描 — 每個 QR Code 包含一部分流程。',
       importReceived: '已接收 {cur} / {total} 批',
       importReady: '已接收 {count} 個流程，要匯入嗎？',
-      importMerge: '匯入'
+      importMerge: '匯入',
+      importWipeFirst: '先刪除所有現有流程'
     },
     'zh-CN': {
       appTitle: '简易计时器',
@@ -386,7 +389,8 @@ window.TimerApp = window.TimerApp || {};
       importUploadPrefix: '或者',
       importUploadLink: '上传屏幕截图',
       importUploadSuffix: '扫描二维码。',
-      importScanning: '扫描中...（{n} 帧）'
+      importScanning: '扫描中...（{n} 帧）',
+      importWipeFirst: '先删除所有现有流程'
     },
     ja: {
       appTitle: 'EZ タイマー',
@@ -482,7 +486,8 @@ window.TimerApp = window.TimerApp || {};
       importUploadPrefix: '',
       importUploadLink: 'スクリーンショットをアップロード',
       importUploadSuffix: 'してQRコードを読み取ってください。',
-      importScanning: 'スキャン中...（{n} フレーム）'
+      importScanning: 'スキャン中...（{n} フレーム）',
+      importWipeFirst: '既存のルーティンをすべて削除してからインポート'
     }
   };
 
