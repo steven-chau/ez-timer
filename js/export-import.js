@@ -5,6 +5,22 @@ window.TimerApp = window.TimerApp || {};
 
   var MAX_CHUNK_BYTES = 1800;
 
+  // Base64 is pure ASCII, so the QR payload is immune to non-ASCII
+  // character-encoding issues regardless of routine names.
+  function base64Encode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+
+  function base64Decode(b64) {
+    var bin = atob(b64);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
   function stripRoutine(r) {
     return {
       name: r.name,
@@ -40,10 +56,10 @@ window.TimerApp = window.TimerApp || {};
     }
 
     var json = JSON.stringify(routines);
-    console.log('Export: ' + routines.length + ' routines, ' + json.length + ' bytes');
+    console.log('Export: ' + routines.length + ' routines, ' + json.length + ' chars');
 
     var chunks;
-    if (json.length <= MAX_CHUNK_BYTES) {
+    if (base64Encode(json).length <= MAX_CHUNK_BYTES) {
       chunks = [{ i: 0, n: 1, d: routines }];
     } else {
       chunks = chunkRoutines(routines, MAX_CHUNK_BYTES);
@@ -59,7 +75,7 @@ window.TimerApp = window.TimerApp || {};
     for (var i = 0; i < routines.length; i++) {
       var test = current.concat([routines[i]]);
       var testJson = JSON.stringify({ i: 0, n: 1, d: test });
-      if (testJson.length <= maxBytes) {
+      if (base64Encode(testJson).length <= maxBytes) {
         current.push(routines[i]);
       } else {
         if (current.length === 0) {
@@ -93,7 +109,7 @@ window.TimerApp = window.TimerApp || {};
 
     function renderQr() {
       var chunk = chunks[currentIdx];
-      var payload = JSON.stringify(chunk);
+      var payload = base64Encode(JSON.stringify(chunk));
 
       container.innerHTML = '';
       try {
@@ -229,16 +245,92 @@ window.TimerApp = window.TimerApp || {};
     });
   }
 
-  function onScanSuccess(decodedText) {
+  // Rich diagnostics for a JSON.parse failure on a scanned payload, to
+  // pinpoint whether the QR decode corrupted the data (control characters,
+  // stitched frames) or the wrong QR code was scanned.
+  function describeParseFailure(rawText, err) {
+    var trimmed = rawText.replace(/^\s+/, '');
+    var looksOurs = trimmed.charAt(0) === '[' || trimmed.indexOf('{"i":') === 0 ||
+      (trimmed.indexOf('"name"') !== -1 && trimmed.indexOf('"sets"') !== -1);
+    console.warn('Import: JSON parse failed — ' +
+      (looksOurs ? 'looks like an EZ Timer export, but the decoded data is corrupted' : 'probably not an EZ Timer QR code') +
+      '. Error: ' + err.message);
+    console.warn('Import: decoded text length: ' + rawText.length + ' chars');
+
+    // Exact positions of every control character that breaks JSON
+    var bad = [];
+    for (var i = 0; i < rawText.length; i++) {
+      var c = rawText.charCodeAt(i);
+      if (c < 32 || c === 127) bad.push(i);
+    }
+    if (bad.length > 0) {
+      var desc = bad.slice(0, 10).map(function(i) {
+        return 'pos ' + i + ' = char code ' + rawText.charCodeAt(i);
+      }).join(', ');
+      if (bad.length > 10) desc += ', ... (' + bad.length + ' total)';
+      console.warn('Import: control characters in decoded text: ' + desc);
+    }
+
+    // Context around where the parser gave up
+    var pos = -1;
+    var m = err.message.match(/position (\d+)/);
+    if (m) {
+      pos = parseInt(m[1], 10);
+    } else {
+      m = err.message.match(/column (\d+)/);
+      if (m) pos = parseInt(m[1], 10) - 1;
+    }
+    if (pos !== -1) {
+      var start = Math.max(0, pos - 40);
+      var end = Math.min(rawText.length, pos + 40);
+      console.warn('Import: context around error position ' + pos + ': ...' +
+        JSON.stringify(rawText.slice(start, end)) + '...');
+    }
+
+    // Detects the scanner stitching two QR frames into one decode
+    var frames = (rawText.match(/\{"i":/g) || []).length;
+    if (frames > 1) {
+      console.warn('Import: decoded text contains ' + frames + ' JSON objects — the scanner likely stitched two QR frames together');
+    }
+
+    var shown = rawText.length > 2000 ? rawText.slice(0, 2000) + ' …[truncated]' : rawText;
+    console.warn('Import: full decoded text (escaped): ' + JSON.stringify(shown));
+
+    // For base64-format payloads, show what the payload decodes to
+    if (trimmed.charAt(0) !== '[' && trimmed.charAt(0) !== '{') {
+      try {
+        var decoded = base64Decode(rawText.trim());
+        var shown2 = decoded.length > 2000 ? decoded.slice(0, 2000) + ' …[truncated]' : decoded;
+        console.warn('Import: base64-decoded text (escaped): ' + JSON.stringify(shown2));
+      } catch (e2) {
+        console.warn('Import: payload is not valid base64 either: ' + e2.message);
+      }
+    }
+  }
+
+  function onScanSuccess(decodedText, decodedResult) {
     console.log('Import: QR scanned, ' + decodedText.length + ' bytes');
+    if (decodedResult) {
+      try {
+        var fmt = decodedResult.result && decodedResult.result.format ? decodedResult.result.format.formatName : 'unknown';
+        console.log('Import: decoder metadata — format: ' + fmt + ', decoder: ' + (decodedResult.decoderNamespace || 'unknown'));
+      } catch (e) { /* metadata is best-effort */ }
+    }
 
     var data;
     try {
-      data = JSON.parse(decodedText);
+      var text = decodedText.trim();
+      if (text.charAt(0) === '[' || text.charAt(0) === '{') {
+        // Legacy raw-JSON QR (pre-base64 export format)
+        data = JSON.parse(text);
+        console.log('Import: parsed legacy raw-JSON payload');
+      } else {
+        data = JSON.parse(base64Decode(text));
+        console.log('Import: parsed base64 payload');
+      }
       console.log('JSON parsed successfully. Type:', Array.isArray(data) ? 'array' : typeof data);
     } catch (e) {
-      console.warn('Import: JSON parse failed — not our QR code. Error:', e.message);
-      console.warn('Raw text:', decodedText.substring(0, 200));
+      describeParseFailure(decodedText, e);
       return;
     }
 
