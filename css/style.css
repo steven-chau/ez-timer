@@ -225,6 +225,12 @@ body {
   text-align: center;
 }
 
+/* Export needs room for a large, easily-scannable QR */
+.export-modal-content {
+  max-width: 400px;
+  text-align: center;
+}
+
 .about-header {
   display: flex;
   flex-direction: column;

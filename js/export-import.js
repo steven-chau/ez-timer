@@ -3,7 +3,9 @@ window.TimerApp = window.TimerApp || {};
 (function(exports) {
   'use strict';
 
-  var MAX_CHUNK_BYTES = 1800;
+  // Kept small so each QR stays at version ≤15: 77 modules max renders as
+  // 4px blocks, which cameras decode far more reliably than dense QRs.
+  var MAX_CHUNK_BYTES = 400;
 
   // Base64 is pure ASCII, so the QR payload is immune to non-ASCII
   // character-encoding issues regardless of routine names.
@@ -113,16 +115,17 @@ window.TimerApp = window.TimerApp || {};
 
       container.innerHTML = '';
       try {
-        var qr = qrcode(0, 'L');
+        // Error correction M (15%) — L (7%) is too fragile for screen scans
+        var qr = qrcode(0, 'M');
         qr.addData(payload);
         qr.make();
         var moduleCount = qr.getModuleCount();
-        console.log('QR version: ~' + Math.ceil((moduleCount - 17) / 4) + ', modules: ' + moduleCount + 'x' + moduleCount);
 
         var QUIET = 4; // modules of white border required by ZXing
-        var targetSize = 340;
+        var targetSize = Math.min(340, window.innerWidth * 0.85);
         var scale = Math.max(2, Math.floor(targetSize / (moduleCount + QUIET * 2)));
         var paddedSize = (moduleCount + QUIET * 2) * scale;
+        console.log('QR version: ~' + Math.ceil((moduleCount - 17) / 4) + ', modules: ' + moduleCount + 'x' + moduleCount + ', ' + scale + 'px per module');
 
         var canvas = document.createElement('canvas');
         canvas.width = paddedSize;
@@ -246,15 +249,10 @@ window.TimerApp = window.TimerApp || {};
   }
 
   // Rich diagnostics for a JSON.parse failure on a scanned payload, to
-  // pinpoint whether the QR decode corrupted the data (control characters,
-  // stitched frames) or the wrong QR code was scanned.
+  // pinpoint whether the QR decode corrupted the data or the wrong QR
+  // code was scanned.
   function describeParseFailure(rawText, err) {
-    var trimmed = rawText.replace(/^\s+/, '');
-    var looksOurs = trimmed.charAt(0) === '[' || trimmed.indexOf('{"i":') === 0 ||
-      (trimmed.indexOf('"name"') !== -1 && trimmed.indexOf('"sets"') !== -1);
-    console.warn('Import: JSON parse failed — ' +
-      (looksOurs ? 'looks like an EZ Timer export, but the decoded data is corrupted' : 'probably not an EZ Timer QR code') +
-      '. Error: ' + err.message);
+    console.warn('Import: JSON parse failed — probably not an EZ Timer QR code, or the payload is corrupted. Error: ' + err.message);
     console.warn('Import: decoded text length: ' + rawText.length + ' chars');
 
     // Exact positions of every control character that breaks JSON
@@ -287,24 +285,15 @@ window.TimerApp = window.TimerApp || {};
         JSON.stringify(rawText.slice(start, end)) + '...');
     }
 
-    // Detects the scanner stitching two QR frames into one decode
-    var frames = (rawText.match(/\{"i":/g) || []).length;
-    if (frames > 1) {
-      console.warn('Import: decoded text contains ' + frames + ' JSON objects — the scanner likely stitched two QR frames together');
-    }
-
     var shown = rawText.length > 2000 ? rawText.slice(0, 2000) + ' …[truncated]' : rawText;
     console.warn('Import: full decoded text (escaped): ' + JSON.stringify(shown));
 
-    // For base64-format payloads, show what the payload decodes to
-    if (trimmed.charAt(0) !== '[' && trimmed.charAt(0) !== '{') {
-      try {
-        var decoded = base64Decode(rawText.trim());
-        var shown2 = decoded.length > 2000 ? decoded.slice(0, 2000) + ' …[truncated]' : decoded;
-        console.warn('Import: base64-decoded text (escaped): ' + JSON.stringify(shown2));
-      } catch (e2) {
-        console.warn('Import: payload is not valid base64 either: ' + e2.message);
-      }
+    try {
+      var decoded = base64Decode(rawText.trim());
+      var shown2 = decoded.length > 2000 ? decoded.slice(0, 2000) + ' …[truncated]' : decoded;
+      console.warn('Import: base64-decoded text (escaped): ' + JSON.stringify(shown2));
+    } catch (e2) {
+      console.warn('Import: payload is not valid base64 either: ' + e2.message);
     }
   }
 
@@ -319,15 +308,7 @@ window.TimerApp = window.TimerApp || {};
 
     var data;
     try {
-      var text = decodedText.trim();
-      if (text.charAt(0) === '[' || text.charAt(0) === '{') {
-        // Legacy raw-JSON QR (pre-base64 export format)
-        data = JSON.parse(text);
-        console.log('Import: parsed legacy raw-JSON payload');
-      } else {
-        data = JSON.parse(base64Decode(text));
-        console.log('Import: parsed base64 payload');
-      }
+      data = JSON.parse(base64Decode(decodedText.trim()));
       console.log('JSON parsed successfully. Type:', Array.isArray(data) ? 'array' : typeof data);
     } catch (e) {
       describeParseFailure(decodedText, e);
