@@ -164,10 +164,12 @@ window.TimerApp = window.TimerApp || {};
     renderQr();
 
     if (total > 1) {
+      // 1s per frame: misses are harmless — the import waits for all chunks
+      // and the cycle repeats, so a faster rotation only shortens wait time.
       exportTimer = setInterval(function() {
         currentIdx = (currentIdx + 1) % total;
         renderQr();
-      }, 2000);
+      }, 1000);
     }
 
     // Close handler
