@@ -34,7 +34,9 @@ window.TimerApp = window.TimerApp || {};
   var appVersion = '';
 
   function loadVersion() {
-    fetch('sw.js')
+    // Cache-busting query: the menu footer should always show the latest
+    // deployed version, not one served from HTTP cache.
+    fetch('sw.js?t=' + Date.now())
       .then(function(res) { return res.text(); })
       .then(function(text) {
         var match = text.match(/var VERSION = '([^']+)'/);
@@ -84,9 +86,6 @@ window.TimerApp = window.TimerApp || {};
   }
 
   function showUpdateAvailable() {
-    var isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    if (!isStandalone) return;
-
     // Don't show multiple banners
     if (document.getElementById('update-banner')) return;
 
@@ -96,14 +95,23 @@ window.TimerApp = window.TimerApp || {};
     banner.textContent = 'New version available — Tap to update';
 
     banner.addEventListener('click', function() {
+      banner.textContent = 'Updating...';
+      var reloaded = false;
+      function doReload() {
+        if (reloaded) return;
+        reloaded = true;
+        window.location.reload();
+      }
       navigator.serviceWorker.ready.then(function(readyReg) {
         if (readyReg.waiting) {
+          // Reload as soon as the new worker takes control
+          navigator.serviceWorker.addEventListener('controllerchange', doReload);
           readyReg.waiting.postMessage({ type: 'SKIP_WAITING' });
+          // Fallback if the new worker never takes control
+          setTimeout(doReload, 3000);
+        } else {
+          doReload();
         }
-      });
-      banner.textContent = 'Updating...';
-      navigator.serviceWorker.addEventListener('controllerchange', function() {
-        window.location.reload();
       });
     });
 

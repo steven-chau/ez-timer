@@ -1,4 +1,4 @@
-var VERSION = '1.2.46';
+var VERSION = '1.2.47';
 var CACHE = 'ez-timer-v' + VERSION;
 
 var ASSETS = [
@@ -30,7 +30,13 @@ self.addEventListener('install', function(e) {
     caches.open(CACHE).then(function(cache) {
       return Promise.all(
         ASSETS.map(function(url) {
-          return cache.add(url).catch(function(err) {
+          // cache: 'reload' bypasses the browser HTTP cache — GitHub Pages
+          // serves max-age=600, so cache.add() would otherwise fill the new
+          // cache with up-to-10-minute-old files.
+          return fetch(url, { cache: 'reload' }).then(function(resp) {
+            if (!resp.ok) throw new Error('HTTP ' + resp.status + ' for ' + url);
+            return cache.put(url, resp);
+          }).catch(function(err) {
             console.warn('SW: failed to cache ' + url, err);
           });
         })
@@ -68,6 +74,23 @@ self.addEventListener('message', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
+  // Network-first for page navigations so the app shell stays fresh;
+  // fall back to cache when offline.
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request).then(function(resp) {
+        var copy = resp.clone();
+        caches.open(CACHE).then(function(cache) {
+          cache.put(e.request, copy);
+        });
+        return resp;
+      }).catch(function() {
+        return caches.match(e.request);
+      })
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       return cached || fetch(e.request);
