@@ -68,6 +68,24 @@ window.TimerApp = window.TimerApp || {};
       console.log('Export: split into ' + chunks.length + ' QR frames');
     }
 
+    // Chunks hold different amounts of data, so their QRs would be different
+    // versions and render at different sizes — making the modal resize on
+    // every frame. Pad each chunk's JSON with trailing spaces (legal JSON,
+    // trimmed by the importer) so every payload has the same byte length:
+    // same base64 length, same QR version, same rendered size.
+    if (chunks.length > 1) {
+      var maxBytes = 0;
+      var chunkJson = chunks.map(function(chunk) {
+        var j = JSON.stringify(chunk);
+        maxBytes = Math.max(maxBytes, new TextEncoder().encode(j).length);
+        return j;
+      });
+      chunks.forEach(function(chunk, idx) {
+        var j = chunkJson[idx];
+        chunk._json = j + ' '.repeat(maxBytes - new TextEncoder().encode(j).length);
+      });
+    }
+
     showExportModal(chunks);
   }
 
@@ -111,7 +129,7 @@ window.TimerApp = window.TimerApp || {};
 
     function renderQr() {
       var chunk = chunks[currentIdx];
-      var payload = base64Encode(JSON.stringify(chunk));
+      var payload = base64Encode(chunk._json || JSON.stringify(chunk));
 
       container.innerHTML = '';
       try {
@@ -162,6 +180,11 @@ window.TimerApp = window.TimerApp || {};
     }
 
     renderQr();
+
+    // Reopening while a previous export is still rotating would orphan the
+    // old interval — the new assignment overwrites exportTimer and the old
+    // closure keeps mutating the modal forever. Stop it first.
+    if (exportTimer) { clearInterval(exportTimer); exportTimer = null; }
 
     if (total > 1) {
       // 1s per frame: misses are harmless — the import waits for all chunks

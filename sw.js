@@ -1,4 +1,4 @@
-var VERSION = '1.2.48';
+var VERSION = '1.2.50';
 var CACHE = 'ez-timer-v' + VERSION;
 
 var ASSETS = [
