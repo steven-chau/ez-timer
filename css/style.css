@@ -1220,6 +1220,10 @@ body {
 }
 
 .records-day-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-secondary);
@@ -1228,6 +1232,13 @@ body {
   margin-bottom: 0.5rem;
   padding-bottom: 0.375rem;
   border-bottom: 1px solid var(--border);
+}
+
+.records-day-total {
+  text-transform: none;
+  letter-spacing: normal;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .records-item {

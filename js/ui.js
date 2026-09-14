@@ -635,8 +635,12 @@ window.TimerApp = window.TimerApp || {};
     var html = '';
     for (var i = 0; i < result.days.length; i++) {
       var day = result.days[i];
+      var dayTotal = 0;
+      for (var k = 0; k < day.records.length; k++) {
+        dayTotal += day.records[k].duration;
+      }
       html += '<div class="records-day">';
-      html += '<div class="records-day-header">' + escapeHtml(day.label) + '</div>';
+      html += '<div class="records-day-header"><span>' + escapeHtml(day.label) + '</span><span class="records-day-total">' + escapeHtml(formatDuration(dayTotal)) + '</span></div>';
       // Within a day, chronological order (oldest first)
       for (var j = day.records.length - 1; j >= 0; j--) {
         var rec = day.records[j];
