@@ -39,6 +39,7 @@ window.TimerApp = window.TimerApp || {};
   var pendingDeleteId = null;
   var currentRoutineName = '';
   var playlist = null;
+  var configScrollY = 0;
   var recordsOffset = 0;
   var DAYS_PER_PAGE = 7;
   var calendarYear, calendarMonth;
@@ -581,6 +582,7 @@ window.TimerApp = window.TimerApp || {};
 
   // ===== Timer View =====
   function showTimerView() {
+    configScrollY = window.scrollY;
     configView.classList.add('hidden');
     recordsView.classList.add('hidden');
     timerView.classList.remove('hidden');
@@ -600,10 +602,12 @@ window.TimerApp = window.TimerApp || {};
       gif.style.left = '';
       gif.style.top = '';
     }
+    window.scrollTo(0, configScrollY);
   }
 
   // ===== Records View =====
   function showRecordsView() {
+    configScrollY = window.scrollY;
     configView.classList.add('hidden');
     timerView.classList.add('hidden');
     recordsView.classList.remove('hidden');
@@ -619,6 +623,7 @@ window.TimerApp = window.TimerApp || {};
     configView.classList.remove('hidden');
     updateConfigDisplay();
     renderRoutines();
+    window.scrollTo(0, configScrollY);
   }
 
   function renderDetailedView() {
