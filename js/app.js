@@ -72,50 +72,45 @@ window.TimerApp = window.TimerApp || {};
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js', { scope: '/ez-timer/' })
       .then(function(reg) {
-        // Notify installed users when an update is available
+        // Auto-update: as soon as a new worker is ready while an older one
+        // controls the page, activate it and reload so the update takes
+        // effect immediately — no tap required.
+        if (reg.waiting) {
+          autoUpdate(reg.waiting);
+          return;
+        }
         reg.addEventListener('updatefound', function() {
           var newWorker = reg.installing;
           if (!newWorker) return;
           newWorker.addEventListener('statechange', function() {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdateAvailable();
+              autoUpdate(newWorker);
             }
           });
         });
       });
   }
 
-  function showUpdateAvailable() {
-    // Don't show multiple banners
-    if (document.getElementById('update-banner')) return;
+  function autoUpdate(worker) {
+    // Notice banner — the page reloads automatically once the new worker activates
+    if (!document.getElementById('update-banner')) {
+      var banner = document.createElement('div');
+      banner.id = 'update-banner';
+      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#ffd54f;color:#333;text-align:center;padding:12px 16px;z-index:9999;font-size:14px;box-shadow:0 -2px 8px rgba(0,0,0,0.2);';
+      banner.textContent = 'New version available — Updating...';
+      document.body.appendChild(banner);
+    }
 
-    var banner = document.createElement('div');
-    banner.id = 'update-banner';
-    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#ffd54f;color:#333;text-align:center;padding:12px 16px;z-index:9999;cursor:pointer;font-size:14px;box-shadow:0 -2px 8px rgba(0,0,0,0.2);';
-    banner.textContent = 'New version available — Tap to update';
-
-    banner.addEventListener('click', function() {
-      banner.textContent = 'Updating...';
-      var reloaded = false;
-      function doReload() {
-        if (reloaded) return;
-        reloaded = true;
-        window.location.reload();
-      }
-      navigator.serviceWorker.ready.then(function(readyReg) {
-        if (readyReg.waiting) {
-          // Reload as soon as the new worker takes control
-          navigator.serviceWorker.addEventListener('controllerchange', doReload);
-          readyReg.waiting.postMessage({ type: 'SKIP_WAITING' });
-          // Fallback if the new worker never takes control
-          setTimeout(doReload, 3000);
-        } else {
-          doReload();
-        }
-      });
-    });
-
-    document.body.appendChild(banner);
+    var reloaded = false;
+    function doReload() {
+      if (reloaded) return;
+      reloaded = true;
+      window.location.reload();
+    }
+    navigator.serviceWorker.addEventListener('controllerchange', doReload);
+    worker.postMessage({ type: 'SKIP_WAITING' });
+    // Fallback if the new worker never takes control
+    setTimeout(doReload, 3000);
   }
 
   // Start the app when DOM is ready
